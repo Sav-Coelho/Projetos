@@ -1,0 +1,16 @@
+### No Programa de Python abaixo eu criei um código simples para gerar uma visualização automática da cotação do dólar. Para isso eu usei um API por meio do pacote 'requests'. O código é bastante simples e foi
+foi programado para atualizar a cotação a cada 1 hora ou 3600 segundos ###
+
+import requests
+import json
+import time
+import datetime
+
+while True:
+    requisicao = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL')
+
+    cotacao = json.loads(requisicao.text)
+
+    print('### COTAÇÃO EM TEMPO REAL ###', datetime.datetime.now())
+    print('Dolar:', cotacao['USDBRL']['bid'])
+    time.sleep (3600)
