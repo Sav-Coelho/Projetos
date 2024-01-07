@@ -1,3 +1,5 @@
+# Nesse código eu construo um simulador simples da Lei dos Grandes Números com um jogo de dois dados
+
 import numpy as np
 import matplotlib.pyplot as plt
 
