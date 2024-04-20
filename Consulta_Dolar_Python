@@ -1,16 +1,40 @@
 ### No Programa de Python abaixo eu criei um código simples para gerar uma visualização automática da cotação do dólar. Para isso eu usei um API por meio do pacote 'requests'. O código é bastante simples e foi
-foi programado para atualizar a cotação a cada 1 hora ou 3600 segundos ###
+### foi programado para atualizar a cotação a cada 2 segundos ###
+
+#Bibliotecas a serem importadas
 
 import requests
 import json
 import time
 import datetime
+import matplotlib.pyplot as plt
+
+#Criação do loop de requisição:
 
 while True:
-    requisicao = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL')
 
-    cotacao = json.loads(requisicao.text)
+    fig, ax = plt.subplots()
+    dados = []
+    def update_plot(): #Criação de uma função de plot dos dados de cotação
+        requisicao = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL') #Utilizaremos a API 'awesomeapi'
+        cotacao_dolar = json.loads(requisicao.text) #Os arquivos solicitados são em JSON
+        dados.append(cotacao_dolar['USDBRL']['bid'])
+        ax.clear()
+        ax.plot(dados, '-b')
+        ax.set_title('COTAÇÃO EM TEMPO REAL') #INCOMUM, mas a função plt.title não funciona nesse código. Usar set_title
+        plt.xlabel('Tempo (2 segs)')
+        plt.ylabel('Preço do Dólar em (R$)')
+        plt.grid(True) #Adicionar grade de plotagem no Matplot --> Muito importante para aesthetics!
 
-    print('### COTAÇÃO EM TEMPO REAL ###', datetime.datetime.now())
-    print('Dolar:', cotacao['USDBRL']['bid'])
-    time.sleep (3600)
+
+        print('### COTAÇÃO EM TEMPO REAL ###', datetime.datetime.now())
+        print('###  Máxima   Baixa   Variação ###')
+        print('Dolar:', cotacao_dolar['USDBRL']['high'], cotacao_dolar['USDBRL']['low'],
+              cotacao_dolar['USDBRL']['varBid']) #Printar valores de máxima, baixa e variação do arquivo JSON
+        time.sleep(1) # Muito importante: adicionar o time.sleep para atualizar o retorno continuamente com novos dados
+
+    while True: #Criação do loop de plotagem
+            update_plot()
+            plt.pause(2)
+
+    fig.show()
